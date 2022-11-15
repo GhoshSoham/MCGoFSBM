@@ -2,7 +2,12 @@ Package: MCGoFSBM
 Title: Monte Carlo Goodness of Fit tests for Stochastic Block Models
 Version: 0.0.0.9000
 Authors@R: 
-    person("Soham", "Ghosh", , email = "sohamghosh@tamu.edu", role = c("aut", "cre"))
+    c(person("Soham", "Ghosh", 
+    "sohamghosh@tamu.edu", 
+    role = c("aut", "cre")),
+    person("Debdeep", "Pati", 
+    "debdeep@stat.tamu.edu", 
+    role = c("aut")))
 Description: What the package does (one paragraph).
 License: GPL (>= 3)
 Encoding: UTF-8
