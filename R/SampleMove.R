@@ -10,12 +10,12 @@ sample_a_move <- function(C, G_current) {
   num_blocks <- length(unique(C))
 
   # Getting edge information
-  num_edges <- length(E(G_current))
-  all_edges <- get.edgelist(G_current)
+  num_edges <- length(igraph::E(G_current))
+  all_edges <- igraph::get.edgelist(G_current)
 
   # Getting edge information of the complement graph
-  G_comp <- graph.complementer(G_current, loops = FALSE)
-  comp_edges <- get.edgelist(G_comp)
+  G_comp <- igraph::graph.complementer(G_current, loops = FALSE)
+  comp_edges <- igraph::get.edgelist(G_comp)
 
   # Determine whether the move is inter-block or intra-block
   type <- sample(2, size = 1)
@@ -36,10 +36,8 @@ sample_a_move <- function(C, G_current) {
       add_edge <- sample(nrow(to_add), 1)
 
       # Add and delete an edge in the same block
-      G_sample <- G_current %>%
-        add_edges(to_add[add_edge, ]) %>%
-        delete_edges(paste0(to_delete[delete_edge, 1], "|", to_delete[delete_edge, 2]))
-
+      G_sample <- igraph::add_edges(G_current, to_add[add_edge, ])
+      G_sample <- igraph::delete_edges(G_sample, paste0(to_delete[delete_edge, 1], "|", to_delete[delete_edge, 2]))
     } else {
       G_sample <- G_current
     }
@@ -61,9 +59,8 @@ sample_a_move <- function(C, G_current) {
       add_edge <- sample(nrow(comp_inter), 1)
 
       # Add and delete an edge between two fixed block
-      G_sample <- G_current %>%
-        add_edges(comp_inter[add_edge, ]) %>%
-        delete_edges(paste0(inter[delete_edge, 1], "|", inter[delete_edge, 2]))
+      G_sample <- igraph::add_edges(G_current, comp_inter[add_edge, ])
+      G_sample <- igraph::delete_edges(G_sample, paste0(inter[delete_edge, 1], "|", inter[delete_edge, 2]))
     } else {
       G_sample <- G_current
     }
