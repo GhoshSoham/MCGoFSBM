@@ -4,7 +4,7 @@
 sample_a_move <- function(C, G_current) {
   # Input:
   # G_current: igraph object and undirected graph
-  # C: vector of block assignment
+  # C: vector of block assignment from 1 to k
 
   # Getting block information
   num_blocks <- length(unique(C))

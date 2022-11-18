@@ -6,12 +6,12 @@
 get_mle <- function(G, C) {
   # Input:
   # G_current: igraph object and undirected graph
-  # C: vector of block assignment from 0 to k
+  # C: vector of block assignment from 1 to k
 
   # Getting graph information
   k <- length(unique(C)) # no of block
   n <- length(C) # no of nodes
-  A <- get.adjacency(G, type = "both")
+  A <- igraph::get.adjacency(G, type = "both")
 
   # Calculate total observed edges between block and within block
   table_obs <- matrix(0, nrow = k, ncol = k)
