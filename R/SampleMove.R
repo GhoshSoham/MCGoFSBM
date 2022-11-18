@@ -25,11 +25,11 @@ sample_a_move <- function(C, G_current) {
     # Sample a block
     s <- sample(num_blocks, size = 1)
 
-    # Find vertexes within the block for both the graph and complement graph
+    # Find edges within the sampled block for both the graph and complement graph
     to_delete <- all_edges[((C[as.numeric(all_edges[, 1])] == s) * (C[as.numeric(all_edges[, 2])] == s)) > 0, ]
     to_add <- comp_edges[((C[as.numeric(comp_edges[, 1])] == s) * (C[as.numeric(comp_edges[, 2])] == s)) > 0, ]
 
-    # Check whether the sampled block and complement has at least one edge
+    # Check whether the sampled block has at least one edge
     if ((length(to_delete) > 0) * (length(to_add) > 0)) {
       # Sample an edge to add from complement graph and delete from the graph
       delete_edge <- sample(nrow(to_delete), 1)
@@ -45,7 +45,28 @@ sample_a_move <- function(C, G_current) {
     }
   } else if (type == 2) {
     # Adding and deleting edges between two different blocks
+    # Sample two different blocks
+    two_blocks <- sample(num_blocks, 2, replace = FALSE)
+    s <- two_blocks[1]
+    t <- two_blocks[2]
 
+    # Find edges between two fixed blocks for both the graph and complement graph
+    inter <- all_edges[((C[as.numeric(all_edges[, 1])] == s) * (C[as.numeric(all_edges[, 2])] == t)) + ((C[as.numeric(all_edges[, 1])] == t) * (C[as.numeric(all_edges[, 2])] == s)) > 0, ]
+    comp_inter <- comp_edges[((C[as.numeric(comp_edges[, 1])] == s) * (C[as.numeric(comp_edges[, 2])] == t)) + ((C[as.numeric(comp_edges[, 1])] == t) * (C[as.numeric(comp_edges[, 2])] == s)) > 0, ]
+
+    # Check whether the sampled blocks have at least one edge
+    if ((length(inter) > 0) * (length(comp_inter) > 0)) {
+      # Sample an edge to add from complement graph and delete from the graph
+      delete_edge <- sample(nrow(inter), 1)
+      add_edge <- sample(nrow(comp_inter), 1)
+
+      # Add and delete an edge between two fixed block
+      G_sample <- G_current %>%
+        add_edges(comp_inter[add_edge, ]) %>%
+        delete_edges(paste0(inter[delete_edge, 1], "|", inter[delete_edge, 2]))
+    } else {
+      G_sample <- G_current
+    }
   }
 
   # Output:
