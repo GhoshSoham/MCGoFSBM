@@ -7,11 +7,11 @@
 goftest(G_obs, C, numGraphs = 100)
 }
 \arguments{
-\item{G_obs:}{igraph object which is an undirected graph and has no self loop}
+\item{G_obs}{igraph object which is an undirected graph and has no self loop}
 
-\item{C:}{numeric vector of size n of block assignment; from 1 to k}
+\item{C}{numeric vector of size n of block assignment; from 1 to k}
 
-\item{numGraphs:}{number of graphs will be sampled; default value is 100}
+\item{numGraphs}{number of graphs will be sampled; default value is 100}
 }
 \value{
 chi_seq: sequence of chi square test statistics on the sampled graphs
