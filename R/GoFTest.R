@@ -1,12 +1,19 @@
 # The true model is ERSBM
 # Chi-Square goodness of fit test statistic computation using the observed graph and MLE
 
-goftest <- function(G_obs, C, numGraphs) {
-  # Input: G: igraph object of a graph, undirected graph and no self loop
-  #        C: numeric vector of size n of block assignment; from 1 to k
-  #        numGraphs: number of times the chain will move and generate new graph
-
-  if (class(G_obs) != "igraph") {
+#' Title
+#'
+#' @param G_obs igraph object which is an undirected graph and has no self loop
+#' @param C numeric vector of size n of block assignment; from 1 to k
+#' @param numGraphs number of graphs will be sampled; default value is 100
+#'
+#' @return chi_seq: sequence of chi square test statistics on the sampled graphs
+#' @return pvalue: estimated p-value when true model is ERSBM
+#' @export
+#'
+#' @examples
+goftest <- function(G_obs, C, numGraphs = 100) {
+  if (!inherits(G_obs, "igraph")) {
     stop("The input G_obs should be an igraph object")
   }
 
@@ -29,7 +36,7 @@ goftest <- function(G_obs, C, numGraphs) {
 
   # Calculate estimate of the parameter from observed graph
   # which will remain same after generating a new graph on same fiber
-  p_mle <- get_mle(G_obs, class)
+  p_mle <- get_mle(G_obs, C)
 
   # It will store GoF test statistic on graphs
   chi_seq <- rep(0, numGraphs)
