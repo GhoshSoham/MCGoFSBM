@@ -8,7 +8,9 @@ Authors@R:
     person("Debdeep", "Pati", 
     email = "debdeep@stat.tamu.edu", 
     role = c("aut")))
-Description: What the package does (one paragraph).
+Description: Performs goodness of fit test for stochastic block models 
+    in the network data. The package now focuses only on the special case when the 
+    underlying model is ERSBM.    
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
