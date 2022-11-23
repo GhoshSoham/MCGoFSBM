@@ -5,8 +5,8 @@
 
 get_mle <- function(G, C) {
   # Input:
-  # G_current: igraph object and undirected graph
-  # C: vector of block assignment from 1 to k
+  # G_current: G_obs igraph object which is an undirected graph and has no self loop
+  # C: numeric vector of size n of block assignment; from 1 to k
 
   # Getting graph information
   k <- length(unique(C)) # no of block
