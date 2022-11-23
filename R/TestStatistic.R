@@ -2,8 +2,8 @@
 # Chi-Square goodness of fit test statistic computation using the observed graph and MLE
 
 graphchi <- function(G, C, p_mle) {
-  # Input: G: igraph object of a graph
-  #        C: vector of block assignment from 1 to k
+  # Input: G: igraph object which is an undirected graph and has no self loop
+  #        C: numeric vector of size n of block assignment; from 1 to k
   #        p_mle: k*k matrix of MLE table
 
   # Getting graph information
