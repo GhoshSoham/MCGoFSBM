@@ -2,22 +2,22 @@
 % Please edit documentation in R/GoFTest.R
 \name{goftest}
 \alias{goftest}
-\title{Title}
+\title{Monte Carlo Goodness of Fit tests for Stochastic Block Models}
 \usage{
-goftest(G_obs, C, numGraphs = 100)
+goftest(A, C, numGraphs = 100)
 }
 \arguments{
-\item{G_obs}{igraph object which is an undirected graph and has no self loop}
+\item{A}{a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph}
 
-\item{C}{numeric vector of size n of block assignment; from 1 to k}
+\item{C}{numeric vector of size n of block assignment of each node; from 1 to k}
 
 \item{numGraphs}{number of graphs will be sampled; default value is 100}
 }
 \value{
-chi_seq: sequence of chi square test statistics on the sampled graphs
-
-pvalue: estimated p-value when true model is ERSBM
+A list with the elements
+\item{statistic}{Value of the chi-square test statistic}
+\item{p.value}{the p-value for the test.}
 }
 \description{
-Title
+\code{goftest} performs chi square goodness of fit test for network data considering the model as ERSBM
 }
