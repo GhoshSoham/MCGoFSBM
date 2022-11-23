@@ -3,37 +3,54 @@
 
 # Monte Carlo Goodness of Fit tests for Stochastic Block Models
 
-## Intended Use of the package
+## Intended use of the package
 
 <!-- badges: start -->
 
-There are various statistical model exists in the literature to fit a
-network data. But a natural statistical question that arise is how good
-is the fit. A chi-square goodness of fit test conditioning on sufficient
-statistic was proposed (Karwa et al.) for ERSBMs. My package is based on
-that. It will take Adjacency Matrix of an undirected, unweighted graph
-with no self loop and also the block assignment of each nodes as input.
-It will fit ERSBM model on that and after performing a chi-square
-goodness of fit test will give the value of the test statistic of the
-observed graph and p-value as an output.  
+There are various statistical models exist in the literature to fit
+network data. But a natural statistical question arises whether the fit
+is good or bad. A chi-square goodness of fit test conditioning on
+sufficient statistics was proposed (Karwa et al.) for several popular
+stochastic block models (SBM). My package now focuses only on a special
+case of those i.e, ERSBM. Also, we have mainly focused on a simple
+undirected, unweighted network with no self-loop. The main function
+`goftest` take the adjacency matrix and the block assignment of each
+node as input. It fits the ERSBM model on the corresponding graph of the
+adjacency matrix and after performing a chi-square goodness of fit test,
+gives the value of the test statistic and p-value as outputs.  
 <!-- badges: end -->
 
 ## Installation
 
-In order to install the package “MCGoFSBM”, the library “devtools” need
-to be installed there. There after, You can install the development
-version of the package from
-[GitHub](https://github.com/GhoshSoham/MCGoFSBM) using the following
-command in console:
+To install the package “MCGoFSBM”, the library “devtools” need to be
+installed there. Thereafter, You can install the development version of
+the package from [GitHub](https://github.com/GhoshSoham/MCGoFSBM) using
+the following commands in the console:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("GhoshSoham/MCGoFSBM")
+devtools::install_github("https://github.com/GhoshSoham/MCGoFSBM")
 ```
 
 ## Left for the project
 
+Till now, I have assumed that the block assignment of each node is known
+to users. I am planning to update the function when the block assignment
+is not known to the user but has an idea about how many blocks are
+there. As the code is not optimized fully, I am planning to implement
+some loops in cpp. Apart from that, I am yet to add some more
+compatibility checks, formally cite the references, and run some formal
+tests to ensure correctness. I also have planned to add some examples
+with the functions in the documentation.
+
 ## Other
+
+When I submitted the proposal, I proposed that I will focus on different
+stochastic block models discussed in (Karwa et al.) with known block
+assignment rather than the case when block assignment is not known for
+the nodes. But later I thought it will be better to focus on a
+particular model i.e, ERSBM now. If time permits, I will upgrade the
+package for other block models discussed in the paper.
 
 <!-- ## Example -->
 <!-- This is a basic example which shows you how to solve a common problem: -->
