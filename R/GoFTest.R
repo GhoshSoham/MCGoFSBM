@@ -2,11 +2,13 @@
 # Testing whether the observed graph follows ERSBM model using chi square goodness of fit test
 # for network data
 
-#' Title
+#'
 #' @title Monte Carlo Goodness of Fit tests for Stochastic Block Models
 #'
+#' @description `goftest` performs chi square goodness of fit test for network data considering the model as ERSBM
+#'
 #' @param A a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph
-#' @param C numeric vector of size n of block assignment; from 1 to k
+#' @param C numeric vector of size n of block assignment of each node; from 1 to k
 #' @param numGraphs number of graphs will be sampled; default value is 100
 #'
 #' @return A list with the elements
@@ -18,19 +20,25 @@
 #' @examples
 goftest <- function(A, C, numGraphs = 100) {
   # Some compatibility checks and error message
+  # Check whether the input A is a matrix
   if (!is.matrix(A)) {
     stop("A should be an adjacency matrix of the graph.")
   }
+
+  # Check whether the graph corresponding to A is an undirected
   if (!isSymmetric.matrix(A)) {
     stop("A should be a square symmetric matrix.")
   }
-  if (!all(A %in% c(0,1) )) {
+
+  # Check whether the graph corresponding to A is an unweighted
+  if (!all(A %in% c(0, 1))) {
     stop("A can only contain 0's and 1's.")
   }
+
+  # Check whether the graph corresponding to A has no self loops
   if (!all(diag(A) == 0)) {
     stop("All the diagonal entries of A should be 0")
   }
-
 
   # Getting dimension information
   n <- nrow(A)
