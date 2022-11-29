@@ -4,12 +4,12 @@
 \alias{goftest}
 \title{Monte Carlo Goodness of Fit tests for Stochastic Block Models}
 \usage{
-goftest(A, C, numGraphs = 100)
+goftest(A, K, numGraphs = 100)
 }
 \arguments{
 \item{A}{a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph}
 
-\item{C}{numeric vector of size n of block assignment of each node; from 1 to k}
+\item{K}{a numeric scalar representing no of blocks}
 
 \item{numGraphs}{number of graphs will be sampled; default value is 100}
 }
