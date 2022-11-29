@@ -41,8 +41,7 @@ goftest <- function(A, K, numGraphs = 100) {
   }
 
   # Getting block assignment for each node from adjacency matrix
-  community <- randnet::reg.SP(A, K)
-  C <- community$cluster
+  C <- block_est(A, K)
 
   # Getting an igraph (an undirected and unweighted) object from the input adjacency matrix
   G_obs <- igraph::graph_from_adjacency_matrix(A, mode = "undirected", weighted = NULL)
