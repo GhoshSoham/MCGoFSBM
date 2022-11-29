@@ -8,7 +8,7 @@
 #' @description `goftest` performs chi square goodness of fit test for network data considering the model as ERSBM
 #'
 #' @param A a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph
-#' @param C numeric vector of size n of block assignment of each node; from 1 to k
+#' @param K a numeric scalar representing no of blocks
 #' @param numGraphs number of graphs will be sampled; default value is 100
 #'
 #' @return A list with the elements
@@ -18,7 +18,7 @@
 #' @export
 #'
 #' @examples
-goftest <- function(A, C, numGraphs = 100) {
+goftest <- function(A, K, numGraphs = 100) {
   # Some compatibility checks and error message
   # Check whether the input A is a matrix
   if (!is.matrix(A)) {
@@ -40,11 +40,9 @@ goftest <- function(A, C, numGraphs = 100) {
     stop("All the diagonal entries of A should be 0")
   }
 
-  # Getting dimension information
-  n <- nrow(A)
-  if (length(C) != n) {
-    stop("The C should have same length as no of rows in A")
-  }
+  # Getting block assignment for each node from adjacency matrix
+  community <- randnet::reg.SP(A, K)
+  C <- community$cluster
 
   # Getting an igraph (an undirected and unweighted) object from the input adjacency matrix
   G_obs <- igraph::graph_from_adjacency_matrix(A, mode = "undirected", weighted = NULL)
