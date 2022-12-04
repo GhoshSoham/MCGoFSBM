@@ -29,15 +29,31 @@ sample_a_move <- function(C, G_current) {
     to_delete <- all_edges[((C[as.numeric(all_edges[, 1])] == s) * (C[as.numeric(all_edges[, 2])] == s)) > 0, ]
     to_add <- comp_edges[((C[as.numeric(comp_edges[, 1])] == s) * (C[as.numeric(comp_edges[, 2])] == s)) > 0, ]
 
-    # Check whether the sampled block has at least one edge
-    if ((length(to_delete) > 0) * (length(to_add) > 0)) {
-      # Sample an edge to add from complement graph and delete from the graph
-      delete_edge <- sample.int(nrow(to_delete), 1)
-      add_edge <- sample.int(nrow(to_add), 1)
+    # Getting dimension information
+    to_delete_l <- length(to_delete)
+    to_add_l <- length(to_add)
 
-      # Add and delete an edge in the same block
-      G_sample <- igraph::add_edges(G_current, to_add[add_edge, ])
-      G_sample <- igraph::delete_edges(G_sample, paste0(to_delete[delete_edge, 1], "|", to_delete[delete_edge, 2]))
+    # Check whether the sampled block has at least one edge
+    if ((to_delete_l > 0) * (to_add_l > 0)) {
+      # Sample an edge to add from complement graph and delete from the graph
+      delete_edge <- sample.int(to_delete_l / 2, 1)
+      add_edge <- sample.int(to_add_l / 2, 1)
+
+      # If the sampled block has only one edge in the complement graph, then that will be added,
+      # otherwise it will add one edge by sampling randomly from complement graph
+      if (length(to_add) == 2) {
+        G_sample <- igraph::graph.union(G_current, igraph::graph(to_add, n = n, directed = FALSE))
+      } else {
+        G_sample <- igraph::graph.union(G_current, igraph::graph(to_add[add_edge, ], n = n, directed = FALSE))
+      }
+
+      # If the sampled block has only one edge in the graph, then that will be deleted
+      # otherwise it will delete one edge by sampling randomly from graph
+      if (to_delete_l == 2) {
+        G_sample <- igraph::graph.difference(G_sample, igraph::graph(to_delete, n = n, directed = FALSE))
+      } else {
+        G_sample <- igraph::graph.difference(G_sample, igraph::graph(to_delete[delete_edge, ], n = n, directed = FALSE))
+      }
     } else {
       G_sample <- G_current
     }
@@ -52,15 +68,31 @@ sample_a_move <- function(C, G_current) {
     inter <- all_edges[((C[as.numeric(all_edges[, 1])] == s) * (C[as.numeric(all_edges[, 2])] == t)) + ((C[as.numeric(all_edges[, 1])] == t) * (C[as.numeric(all_edges[, 2])] == s)) > 0, ]
     comp_inter <- comp_edges[((C[as.numeric(comp_edges[, 1])] == s) * (C[as.numeric(comp_edges[, 2])] == t)) + ((C[as.numeric(comp_edges[, 1])] == t) * (C[as.numeric(comp_edges[, 2])] == s)) > 0, ]
 
-    # Check whether the sampled blocks have at least one edge
-    if ((length(inter) > 0) * (length(comp_inter) > 0)) {
-      # Sample an edge to add from complement graph and delete from the graph
-      delete_edge <- sample.int(nrow(inter), 1)
-      add_edge <- sample.int(nrow(comp_inter), 1)
+    # Getting dimension information
+    inter_l <- length(inter)
+    comp_inter_l <- length(comp_inter)
 
-      # Add and delete an edge between two fixed block
-      G_sample <- igraph::add_edges(G_current, comp_inter[add_edge, ])
-      G_sample <- igraph::delete_edges(G_sample, paste0(inter[delete_edge, 1], "|", inter[delete_edge, 2]))
+    # Check whether the sampled blocks have at least one edge
+    if ((inter_l > 0) * (comp_inter_l > 0)) {
+      # Sample an edge to add from complement graph and delete from the graph
+      delete_edge <- sample.int(inter_l / 2, 1)
+      add_edge <- sample.int(comp_inter_l / 2, 1)
+
+      # If the sampled blocks have only one between edge in the complement graph, then that will be added,
+      # otherwise it will add one between edge by sampling randomly from complement graph
+      if (comp_inter_l == 2) {
+        G_sample <- igraph::graph.union(G_current, igraph::graph(comp_inter, n = n, directed = FALSE))
+      } else {
+        G_sample <- igraph::graph.union(G_current, igraph::graph(comp_inter[add_edge, ], n = n, directed = FALSE))
+      }
+
+      # If the sampled blocks have only one between edge in the graph, then that will be added,
+      # otherwise it will add one between edge by sampling randomly from graph
+      if (inter_l == 2) {
+        G_sample <- igraph::graph.difference(G_sample, igraph::graph(inter, n = n, directed = FALSE))
+      } else {
+        G_sample <- igraph::graph.difference(G_sample, igraph::graph(inter[delete_edge, ], n = n, directed = FALSE))
+      }
     } else {
       G_sample <- G_current
     }
