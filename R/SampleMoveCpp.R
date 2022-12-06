@@ -61,10 +61,49 @@ sample_a_move_cpp <- function(C, A) {
       }
     }
   } else if (type == 2) {
+    # Adding and deleting edges between two different blocks
+    # Sample two different blocks
+    two_blocks <- sample.int(num_blocks, size = 2, replace = FALSE)
+    s <- two_blocks[1]
+    t <- two_blocks[2]
 
+    # Find edges between two fixed blocks for both the graph and complement graph
+    inter <- all_edges[((C[as.numeric(all_edges[, 1])] == s) * (C[as.numeric(all_edges[, 2])] == t)) + ((C[as.numeric(all_edges[, 1])] == t) * (C[as.numeric(all_edges[, 2])] == s)) > 0, ]
+    comp_inter <- comp_edges[((C[as.numeric(comp_edges[, 1])] == s) * (C[as.numeric(comp_edges[, 2])] == t)) + ((C[as.numeric(comp_edges[, 1])] == t) * (C[as.numeric(comp_edges[, 2])] == s)) > 0, ]
+
+    # Getting dimension information
+    inter_l <- length(inter)
+    comp_inter_l <- length(comp_inter)
+
+    # Check whether the sampled blocks have at least one edge
+    if ((inter_l > 0) * (comp_inter_l > 0)) {
+      # Sample an edge to add from complement graph and delete from the graph
+      delete_edge <- sample.int(inter_l / 2, 1)
+      add_edge <- sample.int(comp_inter_l / 2, 1)
+
+      # If the sampled blocks have only one between edge in the complement graph, then that will be added,
+      # otherwise it will add one between edge by sampling randomly from complement graph
+      if (comp_inter_l == 2) {
+        A[comp_inter[1], comp_inter[2]] <- 1
+        A[comp_inter[2], comp_inter[1]] <- 1
+      } else {
+        A[comp_inter[add_edge, ][1], comp_inter[add_edge, ][2]] <- 1
+        A[comp_inter[add_edge, ][2], comp_inter[add_edge, ][1]] <- 1
+      }
+
+      # If the sampled blocks have only one between edge in the graph, then that will be added,
+      # otherwise it will add one between edge by sampling randomly from graph
+      if (inter_l == 2) {
+        A[inter[1], inter[2]] <- 0
+        A[inter[2], inter[1]] <- 0
+      } else {
+        A[inter[delete_edge, ][1], inter[delete_edge, ][2]] <- 0
+        A[inter[delete_edge, ][2], inter[delete_edge, ][1]] <- 0
+      }
+    }
   }
 
   # Output:
-  # the graph after one random move
+  # the adjacency matrix of the graph after one random move
   return(A)
 }
