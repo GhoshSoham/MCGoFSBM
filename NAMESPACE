@@ -2,3 +2,5 @@
 
 export(goftest)
 export(goftest_cpp)
+importFrom(Rcpp,sourceCpp)
+useDynLib(MCGoFSBM, .registration = TRUE)
