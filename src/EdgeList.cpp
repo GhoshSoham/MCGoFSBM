@@ -13,8 +13,8 @@ arma::mat get_edgelist(const arma::mat& adj, const int E, const int n){
 
   // If there is an edge between two nodes, it will add those two nodes in edge_mat
   int e = 0;
-  for (int row = 0; row < n; row ++) {
-    for (int col = n - 1; col > row; col --) {
+  for (int row = 0; row < n - 1; row ++) {
+    for (int col = row + 1; col < n; col ++) {
       if (adj(row, col) == 1){
         edge_mat(e, 0) = row + 1;
         edge_mat(e, 1) = col + 1;
@@ -40,8 +40,8 @@ arma::mat get_edgelist_comp(const arma::mat& adj, const int E, const int n){
   // If there is no edge between two nodes i.e., there is an edge in the complement graph
   // it will add those two nodes in edge_mat
   int e = 0;
-  for (int row = 0; row < n; row ++) {
-    for (int col = n - 1; col > row; col --) {
+  for (int row = 0; row < n - 1; row ++) {
+    for (int col = row + 1; col < n; col ++) {
       if (adj(row, col) == 0){
         edge_mat(e, 0) = row + 1;
         edge_mat(e, 1) = col + 1;
