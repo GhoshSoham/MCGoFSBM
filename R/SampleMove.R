@@ -8,14 +8,17 @@ sample_a_move <- function(C, G_current) {
 
   # Getting block information
   num_blocks <- length(unique(C))
+  n <- length(C)
 
   # Getting edge information
   num_edges <- length(igraph::E(G_current))
   all_edges <- igraph::get.edgelist(G_current)
+  all_edges <- all_edges[order(all_edges[,1], all_edges[,2]), ]
 
   # Getting edge information of the complement graph
   G_comp <- igraph::graph.complementer(G_current, loops = FALSE)
   comp_edges <- igraph::get.edgelist(G_comp)
+  comp_edges <- comp_edges[order(comp_edges[,1], comp_edges[,2]), ]
 
   # Determine whether the move is inter-block or intra-block
   type <- sample.int(2, size = 1)
@@ -54,6 +57,7 @@ sample_a_move <- function(C, G_current) {
       } else {
         G_sample <- igraph::graph.difference(G_sample, igraph::graph(to_delete[delete_edge, ], n = n, directed = FALSE))
       }
+
     } else {
       G_sample <- G_current
     }
@@ -93,6 +97,7 @@ sample_a_move <- function(C, G_current) {
       } else {
         G_sample <- igraph::graph.difference(G_sample, igraph::graph(inter[delete_edge, ], n = n, directed = FALSE))
       }
+
     } else {
       G_sample <- G_current
     }
