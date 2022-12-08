@@ -8,7 +8,7 @@ using namespace Rcpp;
 // n - no of nodes in the graph
 // k - no of blocks in the graph
 // [[Rcpp::export]]
-double graphchi_cpp(const arma::mat& A, const arma::mat& p_mle, const arma::vec& C, int n, int k){
+double graphchi_cpp(const arma::mat& A, const arma::mat& p_mle, const arma::vec& C, const int n, const int k){
   // Initialize degree sequence and expected nodes matrix with all zeros
   arma::mat degseq(n, k); degseq.zeros();
   arma::mat exp_mat(n, k); exp_mat.zeros();
@@ -26,7 +26,7 @@ double graphchi_cpp(const arma::mat& A, const arma::mat& p_mle, const arma::vec&
   }
 
   // Calculate the value of the chi-sq statistic
-  double output = arma::accu(arma::pow(degseq.elem(arma::find(exp_mat!=0)) - exp_mat.elem(arma::find(exp_mat!=0)), 2) / exp_mat.elem(arma::find(exp_mat!=0)));
+  double output = arma::accu(arma::pow(degseq.elem(arma::find(exp_mat != 0)) - exp_mat.elem(arma::find(exp_mat != 0)), 2) / exp_mat.elem(arma::find(exp_mat != 0)));
 
   // Return output
   // Output:
