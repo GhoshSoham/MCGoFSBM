@@ -51,25 +51,25 @@ goftest <- function(A, K, numGraphs = 100) {
   p_mle <- get_mle(G_obs, C)
 
   # It will store GoF test statistic on graphs
-  chi_seq <- rep(0, numGraphs)
+  chi_seqR <- rep(0, numGraphs)
   G <- G_obs
 
   # Storing the first entry of chi_seq as test-stat on observed graph
-  chi_seq[1] <- round(graphchi(G, C, p_mle), 2)
+  chi_seqR[1] <- round(graphchi(G, C, p_mle), 2)
   for (i in 2:numGraphs) {
     # Sampling a new graph
     G_current <- sample_a_move(C, G)
 
     # Computing GoF test statistic on new sampled graph
-    chi_seq[i] <- round(graphchi(G_current, C, p_mle), 2)
+    chi_seqR[i] <- round(graphchi(G_current, C, p_mle), 2)
     G <- G_current
   }
 
   # pvalue i.e, proportion of sampled grpahs has larger GoF statistic than observed one
-  pvalue <- mean(chi_seq > chi_seq[1])
+  pvalue <- mean(chi_seqR > chi_seqR[1])
 
   # Output:
   # chi_seq: sequence of chi square test statistics on the sampled graphs
   # pvalue: estimated p-value when true model is ERSBM
-  return(list(statistic = chi_seq, p.value = pvalue))
+  return(list(statistic = chi_seqR, p.value = pvalue))
 }
