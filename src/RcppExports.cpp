@@ -37,6 +37,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_edgelist_cpp
+arma::umat get_edgelist_cpp(const arma::mat& adj, const arma::vec& C, const int E, const int n);
+RcppExport SEXP _MCGoFSBM_get_edgelist_cpp(SEXP adjSEXP, SEXP CSEXP, SEXP ESEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type adj(adjSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< const int >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_edgelist_cpp(adj, C, E, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_edgelist_comp_cpp
+arma::umat get_edgelist_comp_cpp(const arma::mat& adj, const arma::vec& C, const int E, const int n);
+RcppExport SEXP _MCGoFSBM_get_edgelist_comp_cpp(SEXP adjSEXP, SEXP CSEXP, SEXP ESEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type adj(adjSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< const int >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_edgelist_comp_cpp(adj, C, E, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_mle_cpp
 arma::mat get_mle_cpp(const arma::mat& A, const arma::vec& C, const int k);
 RcppExport SEXP _MCGoFSBM_get_mle_cpp(SEXP ASEXP, SEXP CSEXP, SEXP kSEXP) {
@@ -65,12 +93,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sample_a_move_cpp
+arma::mat sample_a_move_cpp(const arma::mat& adj, const arma::vec& C, const int n, const int k);
+RcppExport SEXP _MCGoFSBM_sample_a_move_cpp(SEXP adjSEXP, SEXP CSEXP, SEXP nSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type adj(adjSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_a_move_cpp(adj, C, n, k));
+    return rcpp_result_gen;
+END_RCPP
+}
+// graph_chain_on_fiber
+arma::vec graph_chain_on_fiber(const arma::mat& A, const arma::vec& C, const int n, const int k, const int numGraphs);
+RcppExport SEXP _MCGoFSBM_graph_chain_on_fiber(SEXP ASEXP, SEXP CSEXP, SEXP nSEXP, SEXP kSEXP, SEXP numGraphsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< const int >::type numGraphs(numGraphsSEXP);
+    rcpp_result_gen = Rcpp::wrap(graph_chain_on_fiber(A, C, n, k, numGraphs));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_MCGoFSBM_get_edgelist", (DL_FUNC) &_MCGoFSBM_get_edgelist, 3},
     {"_MCGoFSBM_get_edgelist_comp", (DL_FUNC) &_MCGoFSBM_get_edgelist_comp, 3},
+    {"_MCGoFSBM_get_edgelist_cpp", (DL_FUNC) &_MCGoFSBM_get_edgelist_cpp, 4},
+    {"_MCGoFSBM_get_edgelist_comp_cpp", (DL_FUNC) &_MCGoFSBM_get_edgelist_comp_cpp, 4},
     {"_MCGoFSBM_get_mle_cpp", (DL_FUNC) &_MCGoFSBM_get_mle_cpp, 3},
     {"_MCGoFSBM_graphchi_cpp", (DL_FUNC) &_MCGoFSBM_graphchi_cpp, 5},
+    {"_MCGoFSBM_sample_a_move_cpp", (DL_FUNC) &_MCGoFSBM_sample_a_move_cpp, 4},
+    {"_MCGoFSBM_graph_chain_on_fiber", (DL_FUNC) &_MCGoFSBM_graph_chain_on_fiber, 5},
     {NULL, NULL, 0}
 };
 

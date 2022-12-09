@@ -9,11 +9,27 @@ get_edgelist_comp <- function(adj, E, n) {
     .Call(`_MCGoFSBM_get_edgelist_comp`, adj, E, n)
 }
 
+get_edgelist_cpp <- function(adj, C, E, n) {
+    .Call(`_MCGoFSBM_get_edgelist_cpp`, adj, C, E, n)
+}
+
+get_edgelist_comp_cpp <- function(adj, C, E, n) {
+    .Call(`_MCGoFSBM_get_edgelist_comp_cpp`, adj, C, E, n)
+}
+
 get_mle_cpp <- function(A, C, k) {
     .Call(`_MCGoFSBM_get_mle_cpp`, A, C, k)
 }
 
 graphchi_cpp <- function(A, p_mle, C, n, k) {
     .Call(`_MCGoFSBM_graphchi_cpp`, A, p_mle, C, n, k)
+}
+
+sample_a_move_cpp <- function(adj, C, n, k) {
+    .Call(`_MCGoFSBM_sample_a_move_cpp`, adj, C, n, k)
+}
+
+graph_chain_on_fiber <- function(A, C, n, k, numGraphs) {
+    .Call(`_MCGoFSBM_graph_chain_on_fiber`, A, C, n, k, numGraphs)
 }
 
