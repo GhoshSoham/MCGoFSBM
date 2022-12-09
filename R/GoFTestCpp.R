@@ -1,7 +1,7 @@
 #'
 #' @title Monte Carlo Goodness of Fit tests for Stochastic Block Models
 #'
-#' @description `goftest_cpp` performs chi square goodness of fit test for network data considering the model as ERSBM using  Rcpp
+#' @description `goftest_cpp` performs chi square goodness of fit test for network data under the model as ERSBM using  Rcpp
 #'
 #' @param A a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph
 #' @param K a numeric scalar representing no of blocks
@@ -37,30 +37,14 @@ goftest_cpp <- function(A, K, numGraphs = 100) {
   }
 
   # Dimension information
-  n = nrow(A)
+  n <- nrow(A)
 
   # Getting block assignment for each node from adjacency matrix
   C_cpp <- block_est(A, K)
 
-  # Calculate estimate of the parameter from observed graph
-  # which will remain same after generating a new graph on same fiber
-  p_mle_cpp <- get_mle_cpp(A, C_cpp, K)
-
-  # It will store GoF test statistic on graphs
-  chi_seq_cpp <- rep(0, numGraphs)
-  A_new <- A
-
-  # Storing the first entry of chi_seq as test-stat on observed graph
-  chi_seq_cpp[1] <- round(graphchi_cpp(A_new, p_mle_cpp, C_cpp, n, K), 2)
-
-  for (i in 2:numGraphs) {
-    # Sampling a new graph
-    A_current <- sample_a_move_cpp(C_cpp, A_new)
-
-    # Computing GoF test statistic on new sampled graph
-    chi_seq_cpp[i] <- round(graphchi_cpp(A_current, p_mle_cpp, C_cpp, n, K), 2)
-    A_new <- A_current
-  }
+  # Calculating GoF statistic several times after sampling new graph on same fiber
+  chi_seq_cpp <- graph_chain_on_fiber(A, C_cpp, n, K, numGraphs)
+  chi_seq_cpp <- round(chi_seq_cpp[, 1], 2)
 
   # pvalue i.e, proportion of sampled grpahs has larger GoF statistic than observed one
   pvalue <- mean(chi_seq_cpp > chi_seq_cpp[1])
