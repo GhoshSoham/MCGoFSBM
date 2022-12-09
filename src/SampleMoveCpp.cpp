@@ -144,7 +144,49 @@ arma::mat sample_a_move_cpp(const arma::mat& adj, const arma::vec& C, const int 
   // Determine whether the move is inter-block or intra-block
   int type = Rcpp::sample(2, 1)(0);
 
+  if (type == 1) {
+    // Adding and deleting edges from same block
+    // Sample a block
+    int s = Rcpp::sample(k, 1)(0);
 
+    //Find edges within the sampled block for both the graph and complement graph
+    arma::uvec index_all = arma::find((all_edges.col(2) == s) && (all_edges.col(3) == s));
+    arma::umat to_delete = all_edges.rows(index_all);
+    arma::uvec index_comp = arma::find((comp_edges.col(2) == s) && (comp_edges.col(3) == s));
+    arma::umat to_add = comp_edges.rows(index_comp);
+
+    // Getting dimension information
+    int to_delete_l = to_delete.n_rows;
+    int to_add_l = to_add.n_rows;
+
+    // Check whether the sampled block has at least one edge
+    if ((to_delete_l > 0) && (to_add_l > 0)) {
+      // Sample an edge to add from complement graph and delete from the graph
+      int delete_edge = Rcpp::sample(to_delete_l, 1)(0);
+      int add_edge = Rcpp::sample(to_add_l, 1)(0);
+
+      // If the sampled block has only one edge in the complement graph, then that will be added,
+      // otherwise it will add one edge by sampling randomly from complement graph
+      if (to_add_l == 1) {
+        A(to_add(0) - 1, to_add(1) - 1) = 1;
+        A(to_add(1) - 1, to_add(0) - 1) = 1;
+      } else {
+        A(to_add(add_edge - 1, 0) - 1, to_add(add_edge - 1, 1) - 1) = 1;
+        A(to_add(add_edge - 1, 1) - 1, to_add(add_edge - 1, 0) - 1) = 1;
+      }
+
+      // # If the sampled block has only one edge in the graph, then that will be deleted
+      // # otherwise it will delete one edge by sampling randomly from graph
+      if (to_delete_l == 1) {
+        A(to_delete(0) - 1, to_delete(1) - 1) = 0;
+        A(to_delete(1) - 1, to_delete(0) - 1) = 0;
+      } else {
+        A(to_delete(delete_edge - 1, 0) - 1, to_delete(delete_edge - 1, 1) - 1) = 0;
+        A(to_delete(delete_edge - 1, 1) - 1, to_delete(delete_edge - 1, 0) - 1) = 0;
+      }
+
+    }
+  }
   // # Output:
   // # the adjacency matrix of the graph after one random move
   return A;
