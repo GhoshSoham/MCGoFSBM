@@ -9,6 +9,7 @@
 #'
 #' @param A a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph
 #' @param K a numeric scalar representing no of blocks
+#' @param C numeric vector of size n of block assignment of each node; from 1 to K
 #' @param numGraphs number of graphs will be sampled; default value is 100
 #'
 #' @return A list with the elements
@@ -18,11 +19,11 @@
 #' @export
 #'
 #' @examples
-goftest <- function(A, K, numGraphs = 100) {
+goftest <- function(A, K, C, numGraphs = 100) {
   # Some compatibility checks and error message
   # Check whether the input A is a matrix
-  if (!is.matrix(A)) {
-    stop("A should be an adjacency matrix of the graph.")
+  if (!is.matrix(A) || !is.numeric(A)) {
+    stop("A should be an adjacency matrix with numeric entry of the graph.")
   }
 
   # Check whether the graph corresponding to A is an undirected
@@ -37,11 +38,44 @@ goftest <- function(A, K, numGraphs = 100) {
 
   # Check whether the graph corresponding to A has no self loops
   if (!all(diag(A) == 0)) {
-    stop("All the diagonal entries of A should be 0")
+    stop("All the diagonal entries of A should be 0.")
   }
 
-  # Getting block assignment for each node from adjacency matrix
-  C <- block_est(A, K)
+  #
+  if(is.null(C) && is.null(K)){
+    stop("Either block assignment or no of blocks should be provided.")
+  }
+
+  if (is.null(C)){
+    # Getting block assignment for each node from adjacency matrix when block assignment is not provided
+    C <- block_est(A, K)
+  }
+
+  if(is.null(K)){
+    # Getting no of blocks from the block assignment vector
+    K <- length(unique(C))
+  }
+
+  # Check all the elements of C and K is numeric
+  if(!is.numeric(C) || !is.numeric(K)){
+    stop("All the elements of C and K should be numeric.")
+  }
+
+  # Check whether all the elements of block assignment are from 1:K
+  if (!all(C %in% 1:K)) {
+    stop("C can only contain values from 1 to K.")
+  }
+
+  # Check whether there is at least one node from each of the block
+  if(length(unique(C)) != K){
+    stop("All the blocks should have atleast one node.")
+  }
+
+  # Getting dimension information
+  n <- nrow(A)
+  if (length(C) != n) {
+    stop("The C should have same length as no of rows in A")
+  }
 
   # Getting an igraph (an undirected and unweighted) object from the input adjacency matrix
   G_obs <- igraph::graph_from_adjacency_matrix(A, mode = "undirected", weighted = NULL)
