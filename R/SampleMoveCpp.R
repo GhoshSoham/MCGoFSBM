@@ -46,8 +46,8 @@ sample_a_move_cpp <- function(C, A) {
         A[to_add[1], to_add[2]] <- 1
         A[to_add[2], to_add[1]] <- 1
       } else {
-        A[to_add[add_edge, ][1], to_add[add_edge, ][2]] <- 1
-        A[to_add[add_edge, ][2], to_add[add_edge, ][1]] <- 1
+        A[to_add[add_edge, 1], to_add[add_edge, 2]] <- 1
+        A[to_add[add_edge, 2], to_add[add_edge, 1]] <- 1
       }
 
       # If the sampled block has only one edge in the graph, then that will be deleted
@@ -56,8 +56,8 @@ sample_a_move_cpp <- function(C, A) {
         A[to_delete[1], to_delete[2]] <- 0
         A[to_delete[2], to_delete[1]] <- 0
       } else {
-        A[to_delete[delete_edge, ][1], to_delete[delete_edge, ][2]] <- 0
-        A[to_delete[delete_edge, ][2], to_delete[delete_edge, ][1]] <- 0
+        A[to_delete[delete_edge, 1], to_delete[delete_edge, 2]] <- 0
+        A[to_delete[delete_edge, 2], to_delete[delete_edge, 1]] <- 0
       }
     }
   } else if (type == 2) {
@@ -87,8 +87,8 @@ sample_a_move_cpp <- function(C, A) {
         A[comp_inter[1], comp_inter[2]] <- 1
         A[comp_inter[2], comp_inter[1]] <- 1
       } else {
-        A[comp_inter[add_edge, ][1], comp_inter[add_edge, ][2]] <- 1
-        A[comp_inter[add_edge, ][2], comp_inter[add_edge, ][1]] <- 1
+        A[comp_inter[add_edge, 1], comp_inter[add_edge, 2]] <- 1
+        A[comp_inter[add_edge, 2], comp_inter[add_edge, 1]] <- 1
       }
 
       # If the sampled blocks have only one between edge in the graph, then that will be added,
@@ -97,8 +97,8 @@ sample_a_move_cpp <- function(C, A) {
         A[inter[1], inter[2]] <- 0
         A[inter[2], inter[1]] <- 0
       } else {
-        A[inter[delete_edge, ][1], inter[delete_edge, ][2]] <- 0
-        A[inter[delete_edge, ][2], inter[delete_edge, ][1]] <- 0
+        A[inter[delete_edge, 1], inter[delete_edge, 2]] <- 0
+        A[inter[delete_edge, 2], inter[delete_edge, 1]] <- 0
       }
     }
   }
