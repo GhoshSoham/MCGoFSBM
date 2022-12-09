@@ -11,32 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// get_edgelist
-arma::mat get_edgelist(const arma::mat& adj, const int E, const int n);
-RcppExport SEXP _MCGoFSBM_get_edgelist(SEXP adjSEXP, SEXP ESEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type adj(adjSEXP);
-    Rcpp::traits::input_parameter< const int >::type E(ESEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_edgelist(adj, E, n));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_edgelist_comp
-arma::mat get_edgelist_comp(const arma::mat& adj, const int E, const int n);
-RcppExport SEXP _MCGoFSBM_get_edgelist_comp(SEXP adjSEXP, SEXP ESEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type adj(adjSEXP);
-    Rcpp::traits::input_parameter< const int >::type E(ESEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_edgelist_comp(adj, E, n));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_edgelist_cpp
 arma::umat get_edgelist_cpp(const arma::mat& adj, const arma::vec& C, const int E, const int n);
 RcppExport SEXP _MCGoFSBM_get_edgelist_cpp(SEXP adjSEXP, SEXP CSEXP, SEXP ESEXP, SEXP nSEXP) {
@@ -124,8 +98,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_MCGoFSBM_get_edgelist", (DL_FUNC) &_MCGoFSBM_get_edgelist, 3},
-    {"_MCGoFSBM_get_edgelist_comp", (DL_FUNC) &_MCGoFSBM_get_edgelist_comp, 3},
     {"_MCGoFSBM_get_edgelist_cpp", (DL_FUNC) &_MCGoFSBM_get_edgelist_cpp, 4},
     {"_MCGoFSBM_get_edgelist_comp_cpp", (DL_FUNC) &_MCGoFSBM_get_edgelist_comp_cpp, 4},
     {"_MCGoFSBM_get_mle_cpp", (DL_FUNC) &_MCGoFSBM_get_mle_cpp, 3},
