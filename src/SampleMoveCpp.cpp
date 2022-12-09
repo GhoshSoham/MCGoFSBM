@@ -186,9 +186,52 @@ arma::mat sample_a_move_cpp(const arma::mat& adj, const arma::vec& C, const int 
       }
 
     }
+  } else if (type == 2) {
+    // Adding and deleting edges between two different blocks
+    // Sample two different blocks
+    IntegerVector temp = Rcpp::sample(k, 2, false);
+    int s = temp(0);
+    int t = temp(1);
+
+    // Find edges between two fixed blocks for both the graph and complement graph
+    arma::uvec index_all = arma::find(((all_edges.col(2) == s) && (all_edges.col(3) == t)) || ((all_edges.col(2) == t) && (all_edges.col(3) == s)));
+    arma::umat inter = all_edges.rows(index_all);
+    arma::uvec index_comp = arma::find(((comp_edges.col(2) == s) && (comp_edges.col(3) == t)) || ((comp_edges.col(2) == t) && (comp_edges.col(3) == s)));
+    arma::umat comp_inter = comp_edges.rows(index_comp);
+
+    // Getting dimension information
+    int inter_l = inter.n_rows;
+    int comp_inter_l = comp_inter.n_rows;
+
+    // Check whether the sampled blocks have at least one edge
+    if ((inter_l > 0) && (comp_inter_l > 0)) {
+      // Sample an edge to add from complement graph and delete from the graph
+      int delete_edge = Rcpp::sample(inter_l, 1)(0);
+      int add_edge = Rcpp::sample(comp_inter_l, 1)(0);
+
+      // If the sampled blocks have only one between edge in the complement graph, then that will be added,
+      // otherwise it will add one between edge by sampling randomly from complement graph
+      if (comp_inter_l == 1) {
+        A(comp_inter(0) - 1, comp_inter(1) - 1) = 1;
+        A(comp_inter(1) - 1, comp_inter(0) - 1) = 1;
+      } else {
+        A(comp_inter(add_edge - 1, 0) - 1, comp_inter(add_edge - 1, 1) - 1) = 1;
+        A(comp_inter(add_edge - 1, 1) - 1, comp_inter(add_edge - 1, 0) - 1) = 1;
+      }
+
+      // If the sampled blocks have only one between edge in the graph, then that will be added,
+      // otherwise it will add one between edge by sampling randomly from graph
+      if (inter_l == 1) {
+        A(inter(0) - 1, inter(1) - 1) = 0;
+        A(inter(1) - 1, inter(0) - 1) = 0;
+      } else {
+        A(inter(delete_edge - 1, 0) - 1, inter(delete_edge - 1, 1) - 1) = 0;
+        A(inter(delete_edge - 1, 1) - 1, inter(delete_edge - 1, 0) - 1) = 0;
+      }
+    }
   }
-  // # Output:
-  // # the adjacency matrix of the graph after one random move
+  // Output:
+  // the adjacency matrix of the graph after one random move
   return A;
 }
 
