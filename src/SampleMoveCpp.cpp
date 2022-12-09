@@ -124,3 +124,29 @@ arma::mat get_mle_cpp(const arma::mat& A, const arma::vec& C, const int k){
   // the estimated q_i,j matrix (the probability of edges between block i and j)
   return arma::mat (table_obs / tot_edge);
 }
+
+// Getting edge list in matrix
+// adj - adjacency matrix of a graph
+// C - numeric vector of size n of block assignment; from 1 to k
+// n - no of nodes in the graph
+// k - no of blocks in the graph
+// [[Rcpp::export]]
+arma::mat sample_a_move_cpp(const arma::mat& adj, const arma::vec& C, const int n, const int k){
+  arma::mat A = adj;
+  // Getting edge information of the graph
+  int num_edges = arma::accu(A) / 2;
+  arma::umat all_edges = get_edgelist_cpp(A, C, num_edges, n);
+
+  // Getting edge information of the complement graph
+  int num_edges_comp = (n * (n - 1)) / 2 - num_edges ;
+  arma::umat comp_edges = get_edgelist_comp_cpp(A, C, num_edges_comp, n);
+
+  // Determine whether the move is inter-block or intra-block
+  int type = Rcpp::sample(2, 1)(0);
+
+
+  // # Output:
+  // # the adjacency matrix of the graph after one random move
+  return A;
+}
+
