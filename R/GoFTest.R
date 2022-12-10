@@ -13,13 +13,59 @@
 #' @param numGraphs number of graphs will be sampled; default value is 100
 #'
 #' @return A list with the elements
-#' \item{statistic}{Value of the chi-square test statistic}
+#' \item{statistic}{the values of the chi-square test statistics on each sampled graph}
 #' \item{p.value}{the p-value for the test.}
 #'
 #' @export
 #'
 #' @examples
-goftest <- function(A, K, C, numGraphs = 100) {
+#' RNGkind(sample.kind = "Rounding")
+#' set.seed(1729)
+#' # We model a network with 3 even classes.
+#' n1 <- 50
+#' n2 <- 50
+#' n3 <- 50
+#'
+#' # Generating block assignment for each of the nodes
+#' n <- n1 + n2 + n3
+#' class <- rep(c(1, 2, 3), c(n1, n2, n3))
+#'
+#' # Generating the adjacency matrix of the network
+#' # Generate the matrix of connection probability.
+#' cmat <- matrix(
+#'   c(
+#'     30, 0.05, 0.05,
+#'     0.05, 30, 0.05,
+#'     0.05, 0.05, 30
+#'   ),
+#'   ncol = 3,
+#'   byrow = TRUE
+#' )
+#' pmat <- cmat / n
+#'
+#' # Creating the n x n adjacency matrix.
+#' adj <- matrix(0, n, n)
+#' for (i in 2:n) {
+#'   for (j in 1:(i - 1)) {
+#'     p <- pmat[class[i], class[j]] # We find the probability of connection with the weights.
+#'     adj[i, j] <- rbinom(1, 1, p) # We include the edge with probability p.
+#'   }
+#' }
+#'
+#' adjsymm <- adj + t(adj)
+#'
+#' # When class assignment is known
+#' out <- goftest(adjsymm, C = class, numGraphs = 100)
+#'
+#' chi_sq_seq <- out$statistic
+#' pvalue <- out$p.value
+#' print(pvalue)
+#'
+#' # Plotting histogram of the sequence of the test statistics
+#' hist(chi_sq_seq, 20, xlab = "chi-square test statistics", main = NULL)
+#' abline(v = chi_sq_seq[1], col = "red", lwd = 5) # adding test statistic on the observed network
+#'
+goftest <- function(A, K = NULL, C = NULL, numGraphs = 100) {
   # Some compatibility checks and error message
   # Check whether the input A is a matrix
   if (!is.matrix(A) || !is.numeric(A)) {
@@ -41,23 +87,30 @@ goftest <- function(A, K, C, numGraphs = 100) {
     stop("All the diagonal entries of A should be 0.")
   }
 
-  #
-  if(is.null(C) && is.null(K)){
+  # Check whether numGraphs is numeric and positive
+  if (!is.numeric(numGraphs) && numGraphs > 0) {
+    stop("numGraphs, number of graphs to sample should be a positive numeric element")
+  }
+
+  # Check whether C or K is provided
+  if (is.null(C) && is.null(K)) {
     stop("Either block assignment or no of blocks should be provided.")
   }
 
-  if (is.null(C)){
+  # If C is not provided, estimate C using value of K, the no of blocks
+  if (is.null(C)) {
     # Getting block assignment for each node from adjacency matrix when block assignment is not provided
     C <- block_est(A, K)
   }
 
-  if(is.null(K)){
+  # If K is not provided, getting no of blocks from C
+  if (is.null(K)) {
     # Getting no of blocks from the block assignment vector
     K <- length(unique(C))
   }
 
-  # Check all the elements of C and K is numeric
-  if(!is.numeric(C) || !is.numeric(K)){
+  # Check all the elements of C and K are numeric
+  if (!is.numeric(C) || !is.numeric(K)) {
     stop("All the elements of C and K should be numeric.")
   }
 
@@ -67,12 +120,14 @@ goftest <- function(A, K, C, numGraphs = 100) {
   }
 
   # Check whether there is at least one node from each of the block
-  if(length(unique(C)) != K){
+  if (length(unique(C)) != K) {
     stop("All the blocks should have atleast one node.")
   }
 
   # Getting dimension information
   n <- nrow(A)
+
+  # Check whether length of C is compatible with dimension of A
   if (length(C) != n) {
     stop("The C should have same length as no of rows in A")
   }
