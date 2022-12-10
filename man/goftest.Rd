@@ -27,43 +27,63 @@ A list with the elements
 RNGkind(sample.kind = "Rounding")
 set.seed(1729)
 # We model a network with 3 even classes.
-n1 = 50
-n2 = 50
-n3 = 50
+n1 <- 50
+n2 <- 50
+n3 <- 50
 
 # Generating block assignment for each of the nodes
-n = n1 + n2 + n3
-class = rep(c(1, 2, 3), c(n1, n2, n3))
+n <- n1 + n2 + n3
+class <- rep(c(1, 2, 3), c(n1, n2, n3))
 
 # Generating the adjacency matrix of the network
 # Generate the matrix of connection probability.
-cmat = matrix(c(30, 0.05, 0.05,
-       0.05, 30, 0.05,
-       0.05, 0.05, 30),
-       ncol= 3,
-       byrow = TRUE)
-pmat = cmat / n
+cmat <- matrix(
+  c(
+    30, 0.05, 0.05,
+    0.05, 30, 0.05,
+    0.05, 0.05, 30
+  ),
+  ncol = 3,
+  byrow = TRUE
+)
+pmat <- cmat / n
 
 # Creating the n x n adjacency matrix.
-adj = matrix(0, n, n)
-for(i in 2:n){
- for(j in 1:(i-1)){
-   p  = pmat[class[i], class[j]]  # We find the probability of connection with the weights.
-   adj[i, j] = rbinom(1, 1, p)     # We include the edge with probability p.
- }
+adj <- matrix(0, n, n)
+for (i in 2:n) {
+  for (j in 1:(i - 1)) {
+    p <- pmat[class[i], class[j]] # We find the probability of connection with the weights.
+    adj[i, j] <- rbinom(1, 1, p) # We include the edge with probability p.
+  }
 }
 
-adjsymm = adj + t(adj)
+adjsymm <- adj + t(adj)
 
 # When class assignment is known
-out = goftest(adjsymm, C = class, numGraphs = 100)
+out <- goftest(adjsymm, C = class, numGraphs = 100)
 
-chi_sq_seq = out$statistic
-pvalue = out$p.value
+chi_sq_seq <- out$statistic
+pvalue <- out$p.value
 print(pvalue)
 
 # Plotting histogram of the sequence of the test statistics
 hist(chi_sq_seq, 20, xlab = "chi-square test statistics", main = NULL)
 abline(v = chi_sq_seq[1], col = "red", lwd = 5) # adding test statistic on the observed network
 
+}
+\references{
+Karwa et al. (2016) Monte Carlo goodness-of-fit tests for degree corrected and related stochastic blockmodels,
+\doi{10.48550/ARXIV.1612.06040}
+
+Qin, T., & Rohe, K. (2013). Regularized spectral clustering under the degree-corrected stochastic blockmodel,
+\emph{Advances in neural information processing systems},
+\strong{26}.
+
+Lei, J., & Rinaldo, A. (2015). Consistency of spectral clustering in stochastic block models,
+\emph{The Annals of Statistics},
+\strong{43(1)}, 215-237.
+\doi{10.1214/14-aos1274}
+
+Li T, Levina E, Zhu J (2021). \emph{randnet: Random Network Model Estimation, Selection and Parameter Tuning}. R packageversion 0.3,
+\url{https://CRAN.R-project.org/package=randnet}.
 }

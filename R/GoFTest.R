@@ -65,6 +65,27 @@
 #' hist(chi_sq_seq, 20, xlab = "chi-square test statistics", main = NULL)
 #' abline(v = chi_sq_seq[1], col = "red", lwd = 5) # adding test statistic on the observed network
 #'
+#' @references
+#' Karwa et al. (2016) Monte Carlo goodness-of-fit tests for degree corrected and related stochastic blockmodels,
+#' \doi{10.48550/ARXIV.1612.06040}
+#'
+#' @references
+#' Qin, T., & Rohe, K. (2013). Regularized spectral clustering under the degree-corrected stochastic blockmodel,
+#' \emph{Advances in neural information processing systems},
+#' \strong{26}.
+#'
+#' @references
+#' Lei, J., & Rinaldo, A. (2015). Consistency of spectral clustering in stochastic block models,
+#' \emph{The Annals of Statistics},
+#' \strong{43(1)}, 215-237.
+#' \doi{10.1214/14-aos1274}
+#'
+#' @references
+#' Li T, Levina E, Zhu J (2021). randnet: Random Network Model Estimation, Selection and Parameter Tuning.
+#' \emph{R packageversion 0.3},
+#' <https://CRAN.R-project.org/package=randnet>.
+#'
+
 goftest <- function(A, K = NULL, C = NULL, numGraphs = 100) {
   # Some compatibility checks and error message
   # Check whether the input A is a matrix

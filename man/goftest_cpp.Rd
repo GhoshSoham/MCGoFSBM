@@ -27,38 +27,42 @@ A list with the elements
 RNGkind(sample.kind = "Rounding")
 set.seed(1729)
 # We model a network with 3 even classes.
-n1 = 50
-n2 = 50
-n3 = 50
+n1 <- 50
+n2 <- 50
+n3 <- 50
 
 # Generating block assignment for each of the nodes
-n = n1 + n2 + n3
-class = rep(c(1, 2, 3), c(n1, n2, n3))
+n <- n1 + n2 + n3
+class <- rep(c(1, 2, 3), c(n1, n2, n3))
 
 # Generating the adjacency matrix of the network
 # Generate the matrix of connection probability.
-cmat = matrix(c(30, 0.05, 0.05,
-       0.05, 30, 0.05,
-       0.05, 0.05, 30),
-       ncol= 3,
-       byrow = TRUE)
-pmat = cmat / n
+cmat <- matrix(
+  c(
+    30, 0.05, 0.05,
+    0.05, 30, 0.05,
+    0.05, 0.05, 30
+  ),
+  ncol = 3,
+  byrow = TRUE
+)
+pmat <- cmat / n
 
 # Creating the n x n adjacency matrix.
-adj = matrix(0, n, n)
-for(i in 2:n){
- for(j in 1:(i-1)){
-   p  = pmat[class[i], class[j]]  # We find the probability of connection with the weights.
-   adj[i, j] = rbinom(1, 1, p)     # We include the edge with probability p.
- }
+adj <- matrix(0, n, n)
+for (i in 2:n) {
+  for (j in 1:(i - 1)) {
+    p <- pmat[class[i], class[j]] # We find the probability of connection with the weights.
+    adj[i, j] <- rbinom(1, 1, p) # We include the edge with probability p.
+  }
 }
 
-adjsymm = adj + t(adj)
+adjsymm <- adj + t(adj)
 
-out_cpp = goftest_cpp(adjsymm, C = class, numGraphs = 100)
+out_cpp <- goftest_cpp(adjsymm, C = class, numGraphs = 100)
 
-chi_sq_seq = out_cpp$statistic
-pvalue = out_cpp$p.value
+chi_sq_seq <- out_cpp$statistic
+pvalue <- out_cpp$p.value
 print(pvalue)
 
 # Plotting histogram of the sequence of the test statistics
