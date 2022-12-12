@@ -17,47 +17,105 @@ knitr::opts_chunk$set(
 ## Intended use of the package
 
 <!-- badges: start -->
-There are various statistical models exist in the literature to fit network data. But a natural statistical question arises whether the fit is good or bad. A chi-square goodness of fit test conditioning on sufficient statistics was proposed (Karwa et al.) for several popular stochastic block models (SBM). My package now focuses only on a special case of those i.e, ERSBM. Also, we have mainly focused on a simple undirected, unweighted network with no self-loop. The main function `goftest` take the adjacency matrix and the block assignment of each node as input. It fits the ERSBM model on the corresponding graph of the adjacency matrix and after performing a chi-square goodness of fit test, gives the value of the test statistic and p-value as outputs.    
-<!-- badges: end -->
-
+There are various statistical models exist in the literature to fit network data. But a natural statistical question arises whether the fit is good or bad. A chi-square goodness of fit test conditioning on sufficient statistics was proposed (Karwa et al.) for several popular stochastic block models (SBM). My package now focuses only on a special case of those i.e, ERSBM. Also, we have mainly focused on simple undirected, unweighted networks with no self-loop. There are two main functions `goftest` and `goftest_cpp`. Where `goftest` is completely written in R and `goftest_cpp` has used Rcpp in some of its computation. These functions fit the ERSBM model on the corresponding graph of the adjacency matrix and after performing a chi-square goodness of fit test, gives the value of the test statistic and p-value as outputs. Both of them take the adjacency matrix of the network as input. Now if the block assignment of each of the nodes is known to the user, that also can be used as input. In most of the cases, we will not know block assignment of the nodes but can have an idea about no of blocks in the network. Then using no of blocks, the user can perform the test. In that case, to estimate the block assignment for each node, the functions have used the code of the function `reg.SP` from `randnet` package.       
 
 ## Installation
 
 To install the package "MCGoFSBM", the library "devtools" need to be installed there. Thereafter, You can install the development version of the package from  [GitHub](https://github.com/GhoshSoham/MCGoFSBM) using the following commands in the console:
 
-``` r
+``` {r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("https://github.com/GhoshSoham/MCGoFSBM")
 ```
 
-## Left for the project
-Till now, I have assumed that the block assignment of each node is known to users. I am planning to update the function when the block assignment is not known to the user but has an idea about how many blocks are there. As the code is not optimized fully, I am planning to implement some loops in cpp. Apart from that, I am yet to add some more compatibility checks, formally cite the references, and run some formal tests to ensure correctness. I also have planned to add some examples with the functions in the documentation.         
+After installing, use the following line of code to get access to the two functions `goftest` and `goftest_cpp`.
+```{r}
+library(MCGoFSBM)
+```
 
+## Example
+We have given a small example here. We have considered here a network with 3 blocks where in each block, there are 50 nodes. First, we have created a matrix containing the probability of having an edge between and within the blocks.
+```{r, warning = FALSE}
+set.seed(1729)
+
+# We model a network with 3 even classes.
+n1 <- 50
+n2 <- 50
+n3 <- 50
+
+# Generating block assignment for each of the nodes
+n <- n1 + n2 + n3
+class <- rep(c(1, 2, 3), c(n1, n2, n3))
+
+# Generating the adjacency matrix of the network
+# Generate the matrix of connection probability
+cmat <- matrix(
+   c(
+     30, 0.05, 0.05,
+     0.05, 30, 0.05,
+     0.05, 0.05, 30
+   ),
+   ncol = 3,
+   byrow = TRUE
+)
+pmat <- cmat / n
+```
+
+Then using the connection probability, we generated an adjacency matrix containing 0's and 1's. Where, if there is an edge between the nodes i and j, the corresponding entry in the matrix will have a value 1 and otherwise 0. 
+```{r}
+# Creating the n x n adjacency matrix.
+adj <- matrix(0, n, n)
+for (i in 2:n) {
+ for (j in 1:(i - 1)) {
+     # We find the probability of connection with the weights.
+     p <- pmat[class[i], class[j]] 
+     # We include the edge with probability p.
+     adj[i, j] <- rbinom(1, 1, p) 
+ }
+}
+
+## Symmetrize the adjacency matrix
+adjsymm <- adj + t(adj)
+```
+
+Now using the adjacency matrix and block assignment (as it's known here) vector, we can use `goftest_cpp` function in the following way. It will produce the value of the test statistics and p-value as output.    
+```{r}
+out_cpp <- goftest_cpp(adjsymm, C = class, numGraphs = 100)
+
+chi_sq_seq <- out_cpp$statistic
+pvalue <- out_cpp$p.value
+print(pvalue)
+```
+
+We have plotted a histogram with the value of test statistics.
+```{r}
+# Plotting histogram of the sequence of the test statistics
+hist(chi_sq_seq, 20, xlab = "chi-square test statistics", main = NULL)
+# adding test statistic on the observed network
+abline(v = chi_sq_seq[1], col = "red", lwd = 5) 
+```
+
+Similary, we can use the other function `goftest` in the following way.  
+```{r}
+out <- goftest(adjsymm, C = class, numGraphs = 100)
+```
+
+Although both of the functions give a similar result (up to sampling), `goftest_cpp` is faster than `goftest` as it has been implemented in Rcpp.
 
 ## Other
-When I submitted the proposal, I proposed that I will focus on different stochastic block models discussed in (Karwa et al.) with known block assignment rather than the case when block assignment is not known for the nodes. But later I thought it will be better to focus on a particular model i.e, ERSBM now. If time permits, I will upgrade the package for other block models discussed in the paper.  
+When I submitted the proposal, I proposed that I will focus on different stochastic block models discussed in (Karwa et al.) with known block assignment rather than the case when block assignment is not known for the nodes. But later I thought it will be better to focus on a particular model i.e, ERSBM now. I am planning to upgrade the package for other block models discussed in the paper in near future. 
 
-<!-- ## Example -->
+## References
+Karwa, V., Pati, D., Petrović, S., Solus, L., Alexeev, N., Raič, M., ... & Yan, B. (2016). Monte Carlo goodness-of-fit tests for degree corrected and related stochastic blockmodels. arXiv preprint arXiv:1612.06040.
 
-<!-- This is a basic example which shows you how to solve a common problem: -->
+Qin, T., & Rohe, K. (2013). Regularized spectral clustering under the degree-corrected stochastic blockmodel. Advances in neural information processing systems, 26.
 
-<!-- ```{r example} -->
-<!-- library(MCGoFSBM) -->
-<!-- ## basic example code -->
-<!-- ``` -->
+Lei, J., & Rinaldo, A. (2015). Consistency of spectral clustering in stochastic block models. The Annals of Statistics, 43(1), 215-23
 
-<!-- What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so: -->
+Li T, Levina E, Zhu J (2021).
+  _randnet: Random Network Model
+  Estimation, Selection and Parameter
+  Tuning_. R package version 0.3,
+  <https://CRAN.R-project.org/package=randnet>.
 
-<!-- ```{r cars} -->
-<!-- summary(cars) -->
-<!-- ``` -->
 
-<!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>. -->
-
-<!-- You can also embed plots, for example: -->
-
-<!-- ```{r pressure, echo = FALSE} -->
-<!-- plot(pressure) -->
-<!-- ``` -->
-
-<!-- In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN. -->
