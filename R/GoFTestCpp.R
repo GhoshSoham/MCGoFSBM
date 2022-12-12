@@ -12,8 +12,8 @@
 #' @export
 #'
 #' @examples
-#' RNGkind(sample.kind = "Rounding")
 #' set.seed(1729)
+#'
 #' # We model a network with 3 even classes.
 #' n1 <- 50
 #' n2 <- 50
@@ -81,7 +81,7 @@
 goftest_cpp <- function(A, K = NULL, C = NULL, numGraphs = 100) {
   # Some compatibility checks and error message
   # Check whether the input A is a matrix
-  if (!is.matrix(A) || !is.numeric(A)) {
+  if (!is.matrix(A) | !is.numeric(A)) {
     stop("A should be an adjacency matrix with numeric entry of the graph.")
   }
 
@@ -101,19 +101,13 @@ goftest_cpp <- function(A, K = NULL, C = NULL, numGraphs = 100) {
   }
 
   # Check whether numGraphs is numeric and positive
-  if (!is.numeric(numGraphs) && numGraphs > 0) {
-    stop("numGraphs, number of graphs to sample should be a positive numeric element")
+  if (!is.numeric(numGraphs) || numGraphs <= 0 || numGraphs %% 1 != 0) {
+    stop("numGraphs, number of graphs to sample should be a positive natural number.")
   }
 
   # Check whether C or K is provided
-  if (is.null(C) && is.null(K)) {
+  if (is.null(C) & is.null(K)) {
     stop("Either block assignment or no of blocks should be provided.")
-  }
-
-  # If C is not provided, estimate C using value of K, the no of blocks
-  if (is.null(C)) {
-    # Getting block assignment for each node from adjacency matrix when block assignment is not provided
-    C <- block_est(A, K)
   }
 
   # If K is not provided, getting no of blocks from C
@@ -122,14 +116,30 @@ goftest_cpp <- function(A, K = NULL, C = NULL, numGraphs = 100) {
     K <- length(unique(C))
   }
 
-  # Check all the elements of C and K are numeric
-  if (!is.numeric(C) || !is.numeric(K)) {
-    stop("All the elements of C and K should be numeric.")
+  # Check whether K is numeric and positive integer
+  if (!is.numeric(K) | K %% 1 != 0) {
+    stop("No of blocks K should be a positive natural number.")
+  }
+
+  # No of blocks K should be at least 2
+  if (K < 2) {
+    stop("No of blocks K should be at least 2.")
+  }
+
+  # If C is not provided, estimate C using value of K, the no of blocks
+  if (is.null(C)) {
+    # Getting block assignment for each node from adjacency matrix when block assignment is not provided
+    C <- block_est(A, K)
+  }
+
+  # Check whether C is numeric
+  if (!is.numeric(C)) {
+    stop("All the elements of C should be numeric.")
   }
 
   # Check whether all the elements of block assignment are from 1:K
   if (!all(C %in% 1:K)) {
-    stop("C can only contain values from 1 to K.")
+    stop("C can only contain values from 1 to K (no of blocks).")
   }
 
   # Check whether there is at least one node from each of the block
@@ -142,7 +152,7 @@ goftest_cpp <- function(A, K = NULL, C = NULL, numGraphs = 100) {
 
   # Check whether length of C is compatible with dimension of A
   if (length(C) != n) {
-    stop("The C should have same length as no of rows in A")
+    stop("The C should have same length as no of rows in A.")
   }
 
   # Calculating GoF statistic several times after sampling new graph on same fiber
