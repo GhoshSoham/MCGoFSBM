@@ -24,6 +24,7 @@ A list with the elements
 \code{goftest_cpp} performs chi square goodness of fit test for network data under the model as ERSBM using  Rcpp
 }
 \examples{
+RNGkind(sample.kind = "Rounding")
 set.seed(1729)
 
 # We model a network with 3 even classes.

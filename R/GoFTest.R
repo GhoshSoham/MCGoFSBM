@@ -19,6 +19,7 @@
 #' @export
 #'
 #' @examples
+#' RNGkind(sample.kind = "Rounding")
 #' set.seed(1729)
 #'
 #' # We model a network with 3 even classes.

@@ -24,6 +24,7 @@ A list with the elements
 \code{goftest} performs chi square goodness of fit test for network data considering the model as ERSBM
 }
 \examples{
+RNGkind(sample.kind = "Rounding")
 set.seed(1729)
 
 # We model a network with 3 even classes.
