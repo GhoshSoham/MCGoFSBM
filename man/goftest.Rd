@@ -9,9 +9,9 @@ goftest(A, K = NULL, C = NULL, numGraphs = 100)
 \arguments{
 \item{A}{a n by n binary symmetric adjacency matrix representing a undirected graph where n is the no nodes in the graph}
 
-\item{K}{a numeric scalar representing no of blocks}
+\item{K}{a positive integer scalar representing no of blocks; K>1}
 
-\item{C}{numeric vector of size n of block assignment of each node; from 1 to K}
+\item{C}{an positive integer vector of size n of block assignment of each node; from 1 to K (no of blocks)}
 
 \item{numGraphs}{number of graphs will be sampled; default value is 100}
 }
@@ -24,8 +24,8 @@ A list with the elements
 \code{goftest} performs chi square goodness of fit test for network data considering the model as ERSBM
 }
 \examples{
-RNGkind(sample.kind = "Rounding")
 set.seed(1729)
+
 # We model a network with 3 even classes.
 n1 <- 50
 n2 <- 50
@@ -84,6 +84,7 @@ Lei, J., & Rinaldo, A. (2015). Consistency of spectral clustering in stochastic 
 \strong{43(1)}, 215-237.
 \doi{10.1214/14-aos1274}
 
-Li T, Levina E, Zhu J (2021). \emph{randnet: Random Network Model Estimation, Selection and Parameter Tuning}. R packageversion 0.3,
+Li T, Levina E, Zhu J (2021). randnet: Random Network Model Estimation, Selection and Parameter Tuning.
+\emph{R packageversion 0.3},
 \url{https://CRAN.R-project.org/package=randnet}.
 }
