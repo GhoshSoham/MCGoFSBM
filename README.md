@@ -61,19 +61,17 @@ n1 <- 50
 n2 <- 50
 n3 <- 50
 
-# Generating block assignment for each of the nodes
+# Generating block assignment for each of the nodes.
 n <- n1 + n2 + n3
 class <- rep(c(1, 2, 3), c(n1, n2, n3))
 
-# Generating the adjacency matrix of the network
-# Generate the matrix of connection probability
+# Generating the adjacency matrix of the network.
+# Generate the matrix of connection probability.
 cmat <- matrix(
-   c(
-     30, 0.05, 0.05,
+   c(30, 0.05, 0.05,
      0.05, 30, 0.05,
      0.05, 0.05, 30
-   ),
-   ncol = 3,
+   ), ncol = 3,
    byrow = TRUE
 )
 pmat <- cmat / n
@@ -116,9 +114,10 @@ print(pvalue)
 We have plotted a histogram with the value of test statistics.
 
 ``` r
-# Plotting histogram of the sequence of the test statistics
+# Plotting histogram of the sequence of the test statistics.
 hist(chi_sq_seq, 20, xlab = "chi-square test statistics", main = NULL)
-# adding test statistic on the observed network
+
+# Adding test statistic on the observed network.
 abline(v = chi_sq_seq[1], col = "red", lwd = 5) 
 ```
 
@@ -140,7 +139,7 @@ When I submitted the proposal, I proposed that I will focus on different
 stochastic block models discussed in (Karwa et al.) with known block
 assignment rather than the case when block assignment is not known for
 the nodes. But later I thought it will be better to focus on a
-particular model i.e, ERSBM now. I am planning to upgrade the package
+particular model i.e, ERSBM now. I have planned to upgrade the package
 for other block models discussed in the paper in near future.
 
 ## References

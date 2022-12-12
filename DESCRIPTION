@@ -1,6 +1,6 @@
 Package: MCGoFSBM
 Title: Monte Carlo Goodness of Fit tests for Stochastic Block Models
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     c(person("Soham", "Ghosh",  
     email = "sohamghosh@tamu.edu", 
@@ -17,6 +17,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.2
 Imports: 
     igraph,
+    irlba,
     Rcpp,
     stats
 LinkingTo: 

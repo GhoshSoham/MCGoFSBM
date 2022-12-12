@@ -5,8 +5,8 @@
 
 block_est <- function (A, K)
 {
-  SVD <- svd(A, nu = K, nv = K)
+  SVD <- irlba::irlba(A, nu = K, nv = K)
 
-  km <- stats::kmeans(SVD$v[, 1:K], centers = K, nstart = 30, iter.max = 30)
+  km <- stats::kmeans(SVD$v[, 1:K], centers = K, nstart = 30, iter.max = 100)
   return(cluster = km$cluster)
 }
