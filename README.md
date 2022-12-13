@@ -54,6 +54,7 @@ created a matrix containing the probability of having an edge between
 and within the blocks.
 
 ``` r
+RNGkind(sample.kind = "Rounding")
 set.seed(1729)
 
 # We model a network with 3 even classes.
@@ -103,12 +104,13 @@ vector, we can use `goftest_cpp` function in the following way. It will
 produce the value of the test statistics and p-value as output.
 
 ``` r
+set.seed(1729)
 out_cpp <- goftest_cpp(adjsymm, C = class, numGraphs = 100)
 
 chi_sq_seq <- out_cpp$statistic
 pvalue <- out_cpp$p.value
 print(pvalue)
-#> [1] 0.66
+#> [1] 0.84
 ```
 
 We have plotted a histogram with the value of test statistics.
@@ -126,6 +128,7 @@ abline(v = chi_sq_seq[1], col = "red", lwd = 5)
 Similary, we can use the other function `goftest` in the following way.
 
 ``` r
+set.seed(1729)
 out <- goftest(adjsymm, C = class, numGraphs = 100)
 ```
 
